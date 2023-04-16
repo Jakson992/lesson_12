@@ -6,6 +6,7 @@ import pickle
 
 class AddressBook(UserDict):
     file_name = 'data.bin'
+
     def add_record(self, record):
         self.data[record.name.value] = record
 
@@ -22,6 +23,7 @@ class AddressBook(UserDict):
         with open(self.file_name, 'rb') as file:
             data = pickle.load(file)
         self.update(data)
+
 
 class Field:
     def __init__(self, value):
@@ -150,11 +152,15 @@ def hello(*args):
 
 @input_error
 def add(*args):
-    _, name, phone = args[0].split()
-    record = Record(name)
-    record.add_phone(phone)
+    _, name, *phones = args[0].split()
+    if name in my_contacts:
+        record = my_contacts[name]
+    else:
+        record = Record(name)
+    for phone in phones:
+        record.add_phone(phone)
     my_contacts[name] = record
-    return f"Contact {name} with phone {phone} has been added."
+    return f"Contact {name} with phones {', '.join(phones)} has been added."
 
 
 @input_error
